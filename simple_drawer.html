@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>無題ドキュメント</title>
+</head>
+
+<style>
+* {
+    padding: 0;
+    margin: 0
+}
+header {
+    height: 80px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.95);
+}
+header .header-menubtn {
+    position: relative;
+}
+header .header-menubtn .checkbox01 {
+    width: 100%;
+    display: block;
+    position: absolute;
+    cursor: pointer;
+    z-index: 13;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    -webkit-transition: -webkit-transform .8s;
+    transition: transform s;
+}
+.header-drawer {
+    position: fixed;
+    top: 0;
+    margin: 0;
+    padding: 20px 0;
+    background-color: white;
+    text-align: left;
+    right: 0; /*←0へ*/
+    width: 220px;
+    z-index: 1;
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+    height: 100%;
+    -webkit-transition: -webkit-transform .8s;
+    transition: transform .8s;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.fixed {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+#togglenav {
+    display: none;
+}
+#togglenav:checked ~ .header-drawer {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    -webkit-transition: -webkit-transform .8s;
+    transition: transform .8s;
+}
+#togglenav:checked ~ .checkbox01 {
+    -webkit-transform: translateX(-220px);
+    transform: translateX(-220px);
+    -webkit-transition: -webkit-transform .8s;
+    transition: transform .8s;
+}
+#togglenav:checked ~ .togglenav-bg {
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+header .header-menubtn .checkbox01 span {
+    transition: all .4s;
+    height: 2px;
+    width: 26px;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    border-radius: 2px;
+    background: #fff;
+    display: block;
+}
+.checkbox01 span:nth-of-type(1) {
+    top: 15px;
+}
+.checkbox01 span:nth-of-type(2) {
+    top: 23px;
+}
+.checkbox01 span:nth-of-type(3) {
+    top: 31px;
+}
+#togglenav:checked ~ .checkbox01 span:nth-of-type(1) {
+    top: 18px;
+    left: 18px;
+    transform: translateY(6px) rotate(-45deg);
+    width: 30%;
+}
+#togglenav:checked ~ .checkbox01 span:nth-of-type(2) {
+    opacity: 0;
+}
+#togglenav:checked ~ .checkbox01 span:nth-of-type(3) {
+    top: 30px;
+    left: 18px;
+    transform: translateY(-6px) rotate(45deg);
+    width: 30%;
+}
+.togglenav-bg {
+    cursor: pointer;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    pointer-events: none;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    transition: background-color .6s;
+}
+.header-drawer-menu {
+    width: 200px;
+}
+.main {
+    height: 140vh;
+    background-color: red;
+    padding-top: 80px;
+}
+</style>
+<body>
+<header>
+<div class="header-menubtn">
+<input type="checkbox" id="togglenav" class="togglenav">
+<label for="togglenav" class="togglenav-bg"></label>
+<label for="togglenav" class="checkbox01"> <span></span><span></span><span></span> </label>
+<nav class="header-drawer"> メニューが入る </nav>
+</div>
+</header>
+<div id="fixed" class="main">
+ああああああああああ
+</div>
+<script>
+
+
+/*ドロワー固定*/
+
+document.addEventListener('DOMContentLoaded', function() {
+  var togglenavBg = document.querySelector('.togglenav-bg');
+  var togglenavCheckboxes = document.querySelectorAll('.togglenav');
+  var fixedElement = document.getElementById('fixed');
+  var header = document.querySelector('header');
+  var scrollPosition;
+
+  togglenavBg.addEventListener('touchstart', function(event) {
+    event.preventDefault();
+    for (var i = 0; i < togglenavCheckboxes.length; i++) {
+      togglenavCheckboxes[i].checked = false;
+    }
+    fixedElement.classList.remove('fixed');
+    fixedElement.style.top = '0';
+    window.scrollTo(0, scrollPosition);
+  });
+
+  document.querySelector('#togglenav').addEventListener('click', function() {
+    for (var i = 0; i < togglenavCheckboxes.length; i++) {
+      if (togglenavCheckboxes[i].checked) {
+        var h = header.clientHeight;
+        scrollPosition = window.scrollY;
+        fixedElement.classList.add('fixed');
+        fixedElement.style.top = -scrollPosition + h - 80 + 'px';
+      } else {
+        fixedElement.classList.remove('fixed');
+        fixedElement.style.top = '0';
+        window.scrollTo(0, scrollPosition);
+      }
+    }
+  });
+});
+/*ドロワーSPタッチ時挙動修正*/
+
+document.addEventListener('DOMContentLoaded', function() {
+  var togglenavBg = document.querySelectorAll('.togglenav-bg')[0];
+  var fixedElement = document.getElementById('fixed');
+  var scrollPosition;
+
+  togglenavBg.addEventListener('touchstart', function(event) {
+    event.preventDefault();
+    document.getElementById("togglenav").checked = false;
+    fixedElement.classList.remove('fixed');
+    fixedElement.style.top = '0';
+    window.scrollTo(0, scrollPosition);
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  // ウィンドウが780px以上にリサイズされたときfixedのクラスを外す
+  window.addEventListener('resize', function() {
+    // ウィンドウの幅を取得
+    var w = window.innerWidth;
+    var x = 780;
+    if (w >= x) {
+      var fixedElement = document.getElementById('fixed');
+      fixedElement.classList.remove('fixed');
+    }
+  });
+
+  // ウィンドウがリサイズされたらドロワーのチェックボックスをはずす
+  window.addEventListener('resize', function() {
+    var togglenavCheckboxes = document.querySelectorAll('.togglenav');
+    for (var i = 0; i < togglenavCheckboxes.length; i++) {
+      togglenavCheckboxes[i].removeAttribute('checked');
+      togglenavCheckboxes[i].checked = false;
+      togglenavCheckboxes[i].dispatchEvent(new Event('change'));
+    }
+  });
+});
+</script>
+</body>
+</html>
